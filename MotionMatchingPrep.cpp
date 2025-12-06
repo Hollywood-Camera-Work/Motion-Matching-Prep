@@ -880,8 +880,8 @@ FVector UMotionMatchingPrep::ComposeGroundMotion(const FVector& PelvisPos, const
     // FVector FootPlaneForward = FootPlaneRot.GetAxisX();
 
     // New addition that properly honors the chosen forward direction. But to be clear, this worked
-    // even by always getting the X axis, so mathematically, this is not so important. ChatGPT
-    // explained it to me how this forward direction isn't used as deeply as one would thing. After
+    // even by always getting the X axis, so mathematically, this is not so important.
+    // This forward direction isn't used as deeply as one would think. After
     // all, we're just piecing together a ground position by duct-taping different axis of several
     // inputs together.
     FVector FootPlaneForward;
@@ -914,3 +914,4 @@ FVector UMotionMatchingPrep::ComposeGroundMotion(const FVector& PelvisPos, const
 
     return ComposedPosition;
 }
+
