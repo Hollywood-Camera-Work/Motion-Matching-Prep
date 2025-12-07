@@ -1,14 +1,14 @@
 # Unreal Motion Matching Prep Tool
 
-Animations used for motion matching in Unreal Engine can't simply project the pelvis down to root and call it root motion.
+Animations used for Motion Matching in Unreal Engine can't simply project the pelvis down to root and call it root motion.
 
-Motion Matching works by matching poses to trajectories, and the trajectory is always nice and pretty. The nicer and prettier the root motion is the better Pose Search is at finding poses.
+Motion Matching works by matching poses to trajectories, and the trajectory is always nice and pretty. The nicer and prettier the root motion is the better Pose Search is at finding poses, and the better the foot contact, because the animation's root motion is similar to the smooth capsule movement of the character.
 
-Simple pelvis -> root motion is very noisy as the actors body shifts around. This results in foot sliding in Unreal's Motion Matching, because it expects clean root paths, ideally hand-painted, requiring heavy IK Foot Planting. But doing selective smoothing is almost as good, and automatic, and Foot Planting is nearly perfect right out of the gate. Then IK Foot Planting simply does the last, complete lock, resulting in more natural animation.
+**Disclaimer**: *This code is good enough for what we needed, but it's not a full product. There's little input validation, it has only been tested on Manny/Quinn skeletons, and the reverting of Animation Modifiers may or may not work.*
 
 ## Pelvis Projection == Noisy Root Motion
 
-When the pelvis is just projected on the ground, the root motion suffers from speed changes and constant shifting left and right.
+When root motion is synthesized by just projecting the pelvis on the ground, the motion is very noisy, as the actor's center of gravity shifts around, and the speed changes during the walk cycle. This results in foot sliding in Unreal's Motion Matching, because wobbly motion is played back on a character moving in a straight line, and this requires more heavy-handed IK foot planting. Pose Search is then also trying to match straight character motion with wobbly animation sequences, resulting in poorer matches.
 
 (Click image to play on YouTube)
 
@@ -16,7 +16,9 @@ When the pelvis is just projected on the ground, the root motion suffers from sp
 
 ## Proper Root Smoothing
 
-With root smoothing, we get close to hand-drawn root motion, and then Pose Search is operating with animations that look like the Motion Matching Trajectory.
+The ideal root motion for motion matching is hand-painted, because it matches how the character actually moves in the game, and it matches the shape of the motion matching Trajectory. But selective smoothing is nearly as good.
+
+With root smoothing, we get better pose matches, and the foot planting is quite good out of the gate, requiring a lighter touch from IK foot planting. 
 
 (Click image to play on YouTube)
 
