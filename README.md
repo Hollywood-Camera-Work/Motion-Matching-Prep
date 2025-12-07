@@ -2,13 +2,13 @@
 
 Animations used for Motion Matching in Unreal Engine can't simply project the pelvis down to root and call it root motion.
 
-Motion Matching works by matching poses to trajectories, and the trajectory is always nice and pretty. The nicer and prettier the root motion is the better Pose Search is at finding poses, and the better the foot contact, because the animation's root motion is similar to the smooth capsule movement of the character.
+Motion Matching works by matching poses to trajectories, and the trajectory is always nice and pretty. The nicer and prettier the root motion is, the better Pose Search is at finding poses, and the better is the quality of the the foot contact, because the animation's root motion is similar to the smooth capsule movement of the character.
 
 **Disclaimer**: *This code is good enough for what we needed, but it's not a full product. There's little input validation, it has only been tested on Manny/Quinn skeletons, and the reverting of Animation Modifiers may or may not work.*
 
 ## Pelvis Projection == Noisy Root Motion
 
-When root motion is synthesized by just projecting the pelvis on the ground, the motion is very noisy, as the actor's center of gravity shifts around, and the speed changes during the walk cycle. This results in foot sliding in Unreal's Motion Matching, because wobbly motion is played back on a character moving in a straight line, and this requires more heavy-handed IK foot planting. Pose Search is then also trying to match straight character motion with wobbly animation sequences, resulting in poorer matches.
+When root motion is synthesized by just projecting the pelvis on the ground, the motion is very noisy, as the actor's center of gravity shifts around, and the speed changes during the walk cycle. This results in foot sliding in motion matching, because wobbly motion is played back on a character moving in a straight line, which requires more heavy-handed IK foot planting. Pose Search is then also trying to match straight character motion with wobbly animation sequences, resulting in poorer matches.
 
 (Click image to play on YouTube)
 
@@ -16,9 +16,9 @@ When root motion is synthesized by just projecting the pelvis on the ground, the
 
 ## Proper Root Smoothing
 
-The ideal root motion for motion matching is hand-painted, because it matches how the character actually moves in the game, and it matches the shape of the motion matching Trajectory. But selective smoothing is nearly as good.
+The ideal root motion for motion matching is hand-painted, because it matches how the character actually moves in the game as well as the trajectory.
 
-With root smoothing, we get better pose matches, and the foot planting is quite good out of the gate, requiring a lighter touch from IK foot planting. 
+But selective smoothing is nearly as good. When the character is moving fast, we smooth the root a lot, and reduce the smoothing around starting/stopping/turning. We generate the center of gravity by averaging select foot bones, we generate the orientation from a cluster of bones so we get the actual skeleton facing-direction, and we also smooth the orientation.
 
 (Click image to play on YouTube)
 
@@ -33,7 +33,7 @@ With root smoothing, we get better pose matches, and the foot planting is quite 
 
 ## What It Does
 
-The goal is to smooth heavily while the character is moving, and reducing smoothing when the character is starting/stopping/turning.
+The goal is to smooth heavily while the character is moving, and reduce smoothing when the character is starting/stopping/turning.
 
 The algorithm creates a velocity table, and chooses the lowest velocity in a given window around current time as "the velocity". This is used to reduce smoothing when slow and more detailed motion is in the near past or future. This is the Root Smoothing factor.
 
